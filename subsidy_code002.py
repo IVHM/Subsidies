@@ -53,13 +53,17 @@ class States():
     def __init__(self,name_in):
         # The name of the state
         self.name = name_in
-        # An array/Series containing the index of the rows
-      
-        
+        #       
         
         # need to implement >>   self.industries = None
         
     def populate_data(self):
+        # These are the different statistics about each state
+        self.subsidy_types = Series()
+        self.awarding_agencies = Series()
+        self.awarding_agencies_amt = Series()
+        self.program_names = Series()
+        
         # Will create a new index containg only the entries linked to the state
         self.reference_index = s_m.index[s_m['State in Which Facility Is Located']==self.name]
         
@@ -71,12 +75,12 @@ class States():
 
 
        
-    
+        self.total_subsidies = 0
         # This is where we can run any calculations for this category
         for i in self.reference_index:
-            
+            crrnt_subsidy_value =s_m.at[i,'Subsidy Value']
             # Here we are getting the values of each row(i) and adding it to the subsidy value total      
-            self.total_subsidies += s_m.at[i,'Subsidy Value']
+            self.total_subsidies += crrnt_subsidy_value
                  
             # Now we check for the kinvd of sibsidies and how many of them
             crrnt_type = s_m.at[i,'Type of Subsidy']
@@ -88,18 +92,19 @@ class States():
                 self.subsidy_types[crrnt_type] += 1
                 
             crrnt_awarding_agency = s_m.at[i,'Awarding Agency']
-            
             if crrnt_awarding_agency not in self.awarding_agencies:
                 self.awarding_agencies[crrnt_awarding_agency] = 1
+                self.awarding_agencies_amt[crrnt_awarding_agency] = crrnt_subsidy_value
             else:
                 self.awarding_agencies[crrnt_awarding_agency] += 1
+                self.awarding_agencies_amt[crrnt_awarding_agency] += crrnt_subsidy_value
                 
             crrnt_program_name = s_m.at[i, 'Program Name']
             
-            if crrnt_program_name not in self.program_name:
-                self.program_name[crrnt_program_name] = 1
+            if crrnt_program_name not in self.program_names:
+                self.program_names[crrnt_program_name] = 1
             else:
-                self.program_name[crrnt_program_name] += 1
+                self.program_names[crrnt_program_name] += 1
                 
         
         self.avg_subsidy = self.total_subsidies / self.number_of_subsidies 
@@ -107,7 +112,7 @@ class States():
         #Here we set all of our temporary dictionaries to their more permanent Series format
         self.subsidy_types.sort_values(ascending=False, inplace=True)
         self.awarding_agencies.sort_values(ascending=False, inplace=True)
-        self.program_name.sort_values(ascending=False, inplace=True)        
+        self.program_names.sort_values(ascending=False, inplace=True)        
 #'''
         
 total_of_all_subsidies = 0
@@ -133,7 +138,7 @@ for i in state_instances:
     print('----Awarding Agencies----')
     print(i.awarding_agencies)
     print('----Program Names--------')
-    print(i.program_name)
+    print(i.program_names)
 
     
 '''
