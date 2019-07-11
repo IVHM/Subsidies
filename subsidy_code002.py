@@ -22,10 +22,13 @@ Created on Mon Jul  1 22:33:41 2019
 '''
 
 
-
 import numpy as np
 import pandas as pd
 from pandas import Series,DataFrame
+
+# Here we set how pandas will display its float/large numbers
+pd.options.display.float_format = '{:.2f}'.format
+
 
 #file_in = 'path/to/file.csv'
 file_in = 'export_2018.csv'
@@ -60,9 +63,11 @@ class States():
     def populate_data(self):
         # These are the different statistics about each state
         self.subsidy_types = Series()
-        self.awarding_agencies = Series()
-        self.awarding_agencies_amt = Series()
+        awarding_agencies = Series()
+        awarding_agencies_amt = Series()
+        self.awarding_agencies_stats = DataFrame()
         self.program_names = Series()
+        
         
         # Will create a new index containg only the entries linked to the state
         self.reference_index = s_m.index[s_m['State in Which Facility Is Located']==self.name]
@@ -92,13 +97,13 @@ class States():
                 self.subsidy_types[crrnt_type] += 1
                 
             crrnt_awarding_agency = s_m.at[i,'Awarding Agency']
-            if crrnt_awarding_agency not in self.awarding_agencies:
-                self.awarding_agencies[crrnt_awarding_agency] = 1
-                self.awarding_agencies_amt[crrnt_awarding_agency] = crrnt_subsidy_value
+            if crrnt_awarding_agency not in awarding_agencies:
+                awarding_agencies[crrnt_awarding_agency] = 1
+                awarding_agencies_amt[crrnt_awarding_agency] = crrnt_subsidy_value
             else:
-                self.awarding_agencies[crrnt_awarding_agency] += 1
-                self.awarding_agencies_amt[crrnt_awarding_agency] += crrnt_subsidy_value
-                
+                awarding_agencies[crrnt_awarding_agency] += 1
+                awarding_agencies_amt[crrnt_awarding_agency] += crrnt_subsidy_value
+
             crrnt_program_name = s_m.at[i, 'Program Name']
             
             if crrnt_program_name not in self.program_names:
@@ -108,10 +113,13 @@ class States():
                 
         
         self.avg_subsidy = self.total_subsidies / self.number_of_subsidies 
-        
+
+        # Now we turn the two series of stats into a dtaframe
+        self.awarding_agencies_stats = DataFrame([awarding_agencies.index,awarding_agencies.values, 
+                                                  awarding_agencies_amt.values]).T
+        self.awarding_agencies_stats.columns = ['Agency','Amt','Tot $ Amt']       
         #Here we set all of our temporary dictionaries to their more permanent Series format
         self.subsidy_types.sort_values(ascending=False, inplace=True)
-        self.awarding_agencies.sort_values(ascending=False, inplace=True)
         self.program_names.sort_values(ascending=False, inplace=True)        
 #'''
         
@@ -136,7 +144,7 @@ for i in state_instances:
     print('-----Top Three Types-----')
     print(i.subsidy_types)
     print('----Awarding Agencies----')
-    print(i.awarding_agencies)
+    print(i.awarding_agencies_stats)
     print('----Program Names--------')
     print(i.program_names)
 
