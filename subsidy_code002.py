@@ -23,6 +23,7 @@ Created on Mon Jul  1 22:33:41 2019
 
 
 import numpy as np
+import matplotlib as plt
 import pandas as pd
 from pandas import Series,DataFrame
 
@@ -133,8 +134,10 @@ for j in list_of_states:
 print('--------------------------------')
 print('Total of all subsidies:', f'${total_of_all_subsidies:,.2f}')
 print('--------------------------------')
- 
-   
+
+# Here we create a temporary list we'll append to before intiating the final DataFrame
+# This is mainly because pandas doesn't handle appending lists as rows that well 
+temp_states_subsidies_financial_plt = []
 for i in state_instances:
     print('\n--------------------------------')
     print('      ',i.name)
@@ -147,7 +150,14 @@ for i in state_instances:
     print(i.awarding_agencies_stats)
     print('----Program Names--------')
     print(i.program_names)
+    
+    if i.name != ' ':
+        temp_states_subsidies_financial_plt.append([i.name,i.total_subsidies,i.avg_subsidy,i.number_of_subsidies])
 
+states_subsidies_financial_plt = DataFrame(temp_states_subsidies_financial_plt, columns=['State','$Amt','$Avg','Num'])
+
+print(states_subsidies_financial_plt)
+states_subsidies_financial_plt.plot.bar(rot=0,subplots=True,x='State')
     
 '''
 foo = States('_')
