@@ -155,10 +155,18 @@ for i in state_instances:
         temp_states_subsidies_financial_plt.append([i.name,i.total_subsidies,i.avg_subsidy,i.number_of_subsidies])
 
 states_subsidies_financial_plt = DataFrame(temp_states_subsidies_financial_plt, columns=['State','$Amt','$Avg','Num'])
+states_subsidies_financial_plt.set_index('State',inplace=True)
+#states_subsidies_financial_plt['$Amt'].astype('uint32', inplace=True)
+
+
+# Here we normalize out the data for better display
+# We're using pandas methods instead of straight 
+states_subsidies_financial_plt = states_subsidies_financial_plt.subtract(states_subsidies_financial_plt.mean()) 
+states_subsidies_financial_plt = states_subsidies_financial_plt.divide(states_subsidies_financial_plt.max().subtract(states_subsidies_financial_plt.min()))
 
 print(states_subsidies_financial_plt)
-states_subsidies_financial_plt.plot.bar(rot=0,subplots=True,x='State')
-    
+states_subsidies_financial_plt.plot.bar(rot=0,subplots=True)
+states_subsidies_financial_plt.plot.box()    
 '''
 foo = States('_')
 foo.populate_data()
