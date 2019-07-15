@@ -5,21 +5,7 @@ Created on Mon Jul  1 22:33:41 2019
 
 @author: hmatthyseniv
 """
-''' Structure of subsidies CSV columns
-		0-Company					1-Parent Company 			2-Location
-		3-City						4-County							5-Address	
-		6-Zip							7-Project Description	8-NAICS 
-		9-Industry Code		10-Year								11-Subsidy Value	
-		12-Megadeal Contribution      					13-Subsidy Value Adjusted For Megadeal	
-		14-Program name 	15-Awarding Agency		16-Type of Subsidy	
-		17-Jobs/Training Slots							    18-Wage Data	
-		19-Wage Data Type	20-Investment Data		21-Source of Data	
-		22-Notes					23-Subsidy Source 		24-CFDA Program Number	
-		25-Loan Value	 					26-State in Which Facility Is Located	
-		27-HQ State of Parent										28-HQ	 Country of Parent	
-		29-Ownership Structure									30-Major Industry of Parent		
-		31-Specific Industry of Parent
-'''
+
 
 
 import numpy as np
@@ -35,6 +21,8 @@ pd.options.display.float_format = '{:.2f}'.format
 file_in = 'export_2018.csv'
 numerical_columns = [6,8,9,10,11,12,16,23,24]
 
+# This dictionary is how we reference each state in the list of instances
+states_instance_dict = {}
 
 #####LOAD AND CLEAN DATA
 # DataFrame containing the information for all subsidies 
@@ -125,7 +113,13 @@ class States():
 #'''
         
 total_of_all_subsidies = 0
+tmp_cntr = 0
+
+# Here we intialize each instance of the state class aling with creating the indexing dictionary
 for j in list_of_states:
+    states_instance_dict[j] = tmp_cntr
+    tmp_cntr += 1
+    
     a = States(j)
     a.populate_data()
     total_of_all_subsidies += a.total_subsidies
@@ -160,18 +154,38 @@ states_subsidies_financial_plt.set_index('State',inplace=True)
 
 
 # Here we normalize out the data for better display
-# We're using pandas methods instead of straight 
+# We're using pandas methods instead of straight opperands since otherwise pandas doesn't handle mixed type dataframe operations that well
 states_subsidies_financial_plt = states_subsidies_financial_plt.subtract(states_subsidies_financial_plt.mean()) 
 states_subsidies_financial_plt = states_subsidies_financial_plt.divide(states_subsidies_financial_plt.max().subtract(states_subsidies_financial_plt.min()))
 
-print(states_subsidies_financial_plt)
 states_subsidies_financial_plt.plot.bar(rot=0,subplots=True)
 states_subsidies_financial_plt.plot.box()    
-'''
-foo = States('_')
-foo.populate_data()
-print(foo.reference_index)        
-print(foo.total_subsidies)    
-print(foo.number_of_subsidies)    
-print(foo.avg_subsidy)   
-''' 
+
+
+# This is where the user can look for more data on an individual state
+while True:
+    print("\n\n-----------------------------------------")
+    print("Enter the name of the state you would like to\n",
+          "see more information on.\n",
+          "To quit type (q)")
+    a = input("Enter choice:")
+    if a in ('q','Q','quit','Quit'):
+        break
+    elif a in list_of_states:
+        i = state_instances[states_instance_dict[a]]
+        print('\n--------------------------------')
+        print('      ',i.name)
+        print('Total subsidy value :', f'${i.total_subsidies:,.2f}')
+        print('Average subsidies   :', f'${i.avg_subsidy:,.2f}')
+        print('Number of subsidies :', i.number_of_subsidies)
+        print('-----Top Three Types-----')
+        print(i.subsidy_types)
+        print('----Awarding Agencies----')
+        print(i.awarding_agencies_stats)
+        print('----Program Names--------')
+        print(i.program_names)    
+    
+
+
+
+
