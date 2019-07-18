@@ -26,7 +26,11 @@ def state_brief(state_in):
     print('      ',state_in.name)
     print('Total subsidy value :', f'${state_in.total_subsidies:,.2f}')
     print('Average subsidies   :', f'${state_in.avg_subsidy:,.2f}')
-    print('Number of subsidies :', state_in.number_of_subsidies)    
+    print('Number of subsidies :', state_in.number_of_subsidies)  
+    
+def help_doc():
+
+    print('You can do this, just believe in yourself.')    
 #def state_bar_graph():
     
     

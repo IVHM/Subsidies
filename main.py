@@ -50,18 +50,20 @@ while True:
           "For list of all state data type (all).\n",
           "For a brief synopsis of state data type (brief).\n",
           "To quit type (q)",
-          "For help_doc type (help)")
+          "For help_doc type (help)",
+          "for missing data type (m)")
          
     choice = input("Enter choice:")
     if choice in ('q','Q','quit','Quit'):
         break
     #Lists full data about every state
     elif choice in ('all', 'All'):
-        for state_name in states_instance_dict.index:
-            display.state_full(state_instances[state_name])
+        for state_name in state_instances:
+            display.state_full(state_name)
     elif choice in ('brief', 'Brief'):
         for state_name in states_instance_dict.index:
             display.state_brief(state_instances[state_name])
+
     elif choice in ('help','Help'):
         display.help_doc()
     # lists full data about a state by abbreviation

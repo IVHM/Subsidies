@@ -19,9 +19,10 @@ pd.options.display.float_format = '{:.2f}'.format
 def init_master_file(file_in, numerical_columns):
     #####LOAD AND CLEAN DATA
     # DataFrame containing the information for all subsidies 
-    s_m_out = pd.read_csv(file_in) 
+    s_m_out = pd.read_csv(file_in, na_values=[' ',"\"\""]) 
     # Now we clean up the data removing all special characters from subsidy values 
     s_m_out['Subsidy Value'].replace({'\$':'',',':''}, regex=True, inplace=True)
+#    s_m_out['State in Which Facility Is Located'].replace(to_replace=r'^ ', value = np.NaN, regex=True, inplace=True)
     # And then convert all them from strings to intergers
     for i in numerical_columns:
         s_m_out.iloc[:,i] = pd.to_numeric(s_m_out[s_m_out.columns[i]], errors='coerce')
