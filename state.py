@@ -43,7 +43,7 @@ class States():
         
         # need to implement >>   self.industries = None
         
-    def populate_data(self):
+    def populate_data(self,s_m):
         # These are the different statistics about each state
         self.subsidy_types = Series()
         awarding_agencies = Series()
@@ -94,9 +94,10 @@ class States():
             else:
                 self.program_names[crrnt_program_name] += 1
                 
-        
-        self.avg_subsidy = self.total_subsidies / self.number_of_subsidies 
-
+        if self.total_subsidies != 0:
+            self.avg_subsidy = self.total_subsidies / self.number_of_subsidies 
+        else:
+            self.avg_subsidy = 0
         # Now we turn the two series of stats into a dtaframe
         self.awarding_agencies_stats = DataFrame([awarding_agencies.index,awarding_agencies.values, 
                                                   awarding_agencies_amt.values]).T
