@@ -48,7 +48,10 @@ while True:
     print("Enter the name of the state you would like to\n",
           "see more information on.\n",
           "For list of all state data type (all).\n",
-          "To quit type (q)")
+          "For a brief synopsis of state data type (brief).\n",
+          "To quit type (q)",
+          "For help_doc type (help)")
+         
     choice = input("Enter choice:")
     if choice in ('q','Q','quit','Quit'):
         break
@@ -59,6 +62,8 @@ while True:
     elif choice in ('brief', 'Brief'):
         for state_name in states_instance_dict.index:
             display.state_brief(state_instances[state_name])
+    elif choice in ('help','Help'):
+        display.help_doc()
     # lists full data about a state by abbreviation
     elif choice in states_instance_dict.Abbreviation.values:
         index = states_instance_dict.index[states_instance_dict['Abbreviation']==choice]
