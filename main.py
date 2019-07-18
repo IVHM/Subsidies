@@ -56,6 +56,9 @@ while True:
     elif choice in ('all', 'All'):
         for state_name in states_instance_dict.index:
             display.state_full(state_instances[state_name])
+    elif choice in ('brief', 'Brief'):
+        for state_name in states_instance_dict.index:
+            display.state_brief(state_instances[state_name])
     # lists full data about a state by abbreviation
     elif choice in states_instance_dict.Abbreviation.values:
         index = states_instance_dict.index[states_instance_dict['Abbreviation']==choice]
