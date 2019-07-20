@@ -22,7 +22,6 @@ def init_master_file(file_in, numerical_columns):
     s_m_out = pd.read_csv(file_in, na_values=[' ',"\"\""]) 
     # Now we clean up the data removing all special characters from subsidy values 
     s_m_out['Subsidy Value'].replace({'\$':'',',':''}, regex=True, inplace=True)
-#    s_m_out['State in Which Facility Is Located'].replace(to_replace=r'^ ', value = np.NaN, regex=True, inplace=True)
     # And then convert all them from strings to intergers
     for i in numerical_columns:
         s_m_out.iloc[:,i] = pd.to_numeric(s_m_out[s_m_out.columns[i]], errors='coerce')
@@ -31,8 +30,29 @@ def init_master_file(file_in, numerical_columns):
     
     #Now we can create a list of all the states/territories in the dataset. 
     list_of_states_out = s_m_out['State in Which Facility Is Located'].unique()    
+
+    # Values to calculte row 
+    row_len = s_m_out.shape[0]    
+    tot_area = row_len*s_m_out.shape[1]
+    tot_missing = 0
     
-    return s_m_out,list_of_states_out
+    missing_data = DataFrame()
+    tmp_missing_data = []
+        
+    for column_name in s_m_out.columns:
+        number_missing = s_m_out[column_name].isna().sum(axis=0)
+        percent_missing = (number_missing/row_len)*100
+        tot_missing += number_missing
+        tmp_missing_data.append([column_name,number_missing,percent_missing])
+       
+        
+    
+    tmp_missing_data = [['Total', tot_missing, tot_missing/tot_area ]]+tmp_missing_data        
+    missing_data = DataFrame(tmp_missing_data, columns=['Column Name','Total Missing', 'Percent Missing'],index=['Total']+list(s_m_out.columns)) 
+    missing_data.astype('float32',errors='ignore',copy=False)        
+        
+        
+    return s_m_out,list_of_states_out, missing_data
 
 # Class for organizing subsidy data by state    
 class States():
