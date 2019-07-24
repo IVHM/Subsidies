@@ -6,6 +6,7 @@ THe main runtime for the different calls to state
 import state
 from state import States
 import display 
+import interface
 
 
 #### Initialization of master file
