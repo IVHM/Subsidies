@@ -14,58 +14,84 @@ from tkinter.filedialog import askdirectory,askopenfilename
 #IMAGE LOCATIONS
 logo_in = 'images/temp_logo.gif'
 
-#Opens a tkinter dialog to get workign file
-def add_file(button):
-    #filename = askdirectory()
-    filename = askopenfilename()
-    print(filename)
-    app.setEntry('path', filename)
-    app.setLabel("file_check", str(app.getEntry("load a file")))
 
-# 
-def generate():
+def do_nothing():
+    pass
+
+def just_a_bunch_o_buttons_n_stuff():
+    app.addLabel("test label", "Well look who it is.")   
+    app.addLabel("testes label", "bees")    
+    app.addButtons(["btn1","btn2"], do_nothing )
+    app.addEntry("Bees?")
+    app.addLabels("Bees","Bees")
+    app.startFrame('video killed the radio button')
+    app.addRadioButton("bees", "Yes")
+    app.addRadioButton("bees", "Most definitely")
+    app.addRadioButton("bees", "WHAt??")
+    app.addRadioButton("bees", "BEEEEEES!!!!")
+    app.stopFrame()
+
+
+
+# LOAD AND INIT DATA/WINDOWS 
+def initialize_dataset():
     print("""
           Pretend we're loading up all the data from the csv 
           And turning them into their classes and containers
           weeeeeeee!
-          """) 
-    crnt_progress = app.getMeter("generation_progress")
-    app.setMeter("generation_progress",crnt_progress+10)       
+          """)
     
-
-def load_main():
+    
+    file_path = app.getEntry("load file")
+    if file_path !=  "- Choose a file -": # default
+        print("intializing contents of file: ",app.getEntry("load file"))      
+        app.setMeter('generation progress',100)
+        load_data_win()
+    else:
+        print("Please choose a file before loading ")
+    
+    
+    
+    
+    
+# MAIN WINDOW
+def load_main_win():
+    
+    app.startSubWindow("Main Screen", "1200x800")
+    # LOGO
     app.startFrame('main_header',0,0)
     app.addImage("Logo",logo_in, compound=None)
     app.stopFrame()
+    
+    # LOAD FILE
+    app.addOpenEntry("load file",)
+    app.setEntryDefault("load file", "- Choose a file -")
+    app.addButton("Generate", initialize_dataset)
+    
+    # INIT/EXIT BTNS
+    app.addMeter("initialization progress")
+    app.setMeterFill("initialization progress", "light blue")
+    app.addButton("Exit", app.stop, app.getRow(),3)
+    
+    app.stopSubWindow()
+    
 
 
+    
+    
+# DATA OVERVIEW/NAVIGATION WINDOW    
+def load_data_win():
+    app.startSubWindow("data overview","900x600")
+    just_a_bunch_o_buttons_n_stuff()
+    app.stopSubWindow()
+    
     
     
 # Create gui object to hold windows
 app = gui("Subsidy Calculator","900x600")
 
-#----Tests
-test_label_row = app.getRow()
-app.addLabel("file_check", 'Default', test_label_row,0)
-app.addLabel('test',"bees", test_label_row,1)
-
-#######Need to fix load image bug
-#load_main()
-#app.addImage("Logo",logo_in, compound=None)
-
-# Loading file
-app.addFileEntry('load a file')
-#----Test
-app.setLabel("file_check", str(app.getEntry("load a file")))
-
-# GENERATE
-app.addButton('generate',generate)
+load_main_win()
 
 
-
-# Progress Bar
-app.addMeter("generation_progress")
-app.setMeterFill("generation_progress","blue")
-app.setMeter("generation_progress",10)
 app.go()
 
