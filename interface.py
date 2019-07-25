@@ -87,24 +87,41 @@ def load_main_win():
     app.addButton("Exit", exit_main, app.getRow(),3)
     
     app.stopSubWindow()
-    
 
+
+
+
+
+# TABS FOR DATA WINDOW    
+def load_overview_tab():
+    just_a_bunch_o_buttons_n_stuff(1)
     
+    
+def load_states_tab():
+    just_a_bunch_o_buttons_n_stuff(2)
+
+
+def load_category_tab():
+    just_a_bunch_o_buttons_n_stuff(3)    
+
+
+
+
     
 # DATA OVERVIEW/NAVIGATION WINDOW    
 def load_data_win():
     app.startTabbedFrame("Data Win Tabs")
     
     app.startTab("Overview")
-    just_a_bunch_o_buttons_n_stuff(1)
+    load_overview_tab()
     app.stopTab()
     
     app.startTab("States")
-    just_a_bunch_o_buttons_n_stuff(2)
+    load_states_tab()
     app.stopTab()
     
     app.startTab("Category")
-    just_a_bunch_o_buttons_n_stuff(3)
+    load_category_tab()
     app.stopTab()
 
     app.stopTabbedFrame()
