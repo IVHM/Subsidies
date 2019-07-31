@@ -11,7 +11,7 @@ import interface
 
 #### Initialization of master file
 
-#file_in = 'path/to/file.csv' 
+# file_in = 'path/to/file.csv'
 csv_file = 'export_2018.csv'
 numerical_columns_in = [6,8,9,10,11,12,16,23,24]
 
@@ -20,19 +20,17 @@ numerical_columns_in = [6,8,9,10,11,12,16,23,24]
 states_instance_dict = pd.read_csv('state_abbreviations.csv')
 
 
-s_m,list_of_states,missing_data = state.init_master_file(csv_file,numerical_columns_in)
+s_m, list_of_states, missing_data = state.init_master_file(csv_file,
+                                                         numerical_columns_in)
 
-# List of all instances of the state 
+# List of all instances of the state
 state_instances = []
 
 # This just tracks the total amount of money across all subsidies
 total_of_all_subsidies = 0
 
 # Here we intialize the instances of the state class into their master array
-tmp_cntr = 0
 for state_name in states_instance_dict['State']:
-    
-    
     a = States(state_name)
     a.populate_data(s_m)
     total_of_all_subsidies += a.total_subsidies
@@ -40,9 +38,9 @@ for state_name in states_instance_dict['State']:
 
 
 
-##### USER INPUT
+# #### USER INPUT
 
-print(len(state_instances),states_instance_dict.shape[0])
+print(len(state_instances), states_instance_dict.shape[0])
 
 while True:
     print("\n\n-----------------------------------------")
