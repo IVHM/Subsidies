@@ -137,10 +137,13 @@ def load_data_win():
     app.setTabbedFrameTabExpand("Data Win Tabs", expand=True)
     
 
+def load_data():
+    raise NotImplementedError
+
 # TABS FOR DATA WINDOW
 def load_overview_tab():
-    app.addLabel("Tot dollar amt: $"+str(tot_amt))
-
+    # Plot viewer
+    app.startFrame("Plot", 0, 0, 3, 5)
 
 def load_states_tab():
     pass
