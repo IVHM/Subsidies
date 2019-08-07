@@ -10,7 +10,8 @@ appJar interface
 import state
 from state import States
 from appJar import gui
-
+from pandas import Series,DataFrame
+from numpy.random import randn
 
 # ------- GLOBAL VARIABLES --------
 
@@ -140,10 +141,53 @@ def load_data_win():
 def load_data():
     raise NotImplementedError
 
+
+#Temporary values for testing display
+overview_T_R_values = DataFrame({"Description": list("abcdefghi"),
+                                 "Value": randn(9)})
+
 # TABS FOR DATA WINDOW
 def load_overview_tab():
-    # Plot viewer
-    app.startFrame("Plot", 0, 0, 3, 5)
+     # Plot viewer
+    app.startFrame("Plot", row=0, column=0)
+    app.setFrameWidth("Plot",8)
+    app.setBg("light blue")
+    app.addLabel("-- THIS IS WHERE THE PLOT IMAGE GOES --")
+    app.stopFrame()
+
+    # Description data ie. Avg subsidy, top state, largest subsidy
+    app.startFrame("Miscelaneaous data labels", row=0, column=8)
+    app.setFrameWidth("Miscelaneaous data labels", 1)
+    app.setBg("yellow")
+    app.label("DESCRIPTION")
+
+    # Adds the description of deach cooresponding value
+    cnt = 0
+    for label_text in overview_T_R_values["Description"]:
+        label_name = "Description_" + str(cnt)
+        app.addLabel(label_name, str(label_text))
+        cnt += 1
+
+    app.stopFrame()
+
+
+    # Value data
+    app.startFrame("Miscelaneaous data values", row=0, column=9)
+    app.setFrameWidth("Miscelaneaous data values", 1)
+    app.setBg("yellow")
+    app.addLabel("VALUE")
+
+    # Adds the values for each entry
+    cnt = 0
+    for label_value in overview_T_R_values["Value"]:
+        label = "Value_" + str(cnt)
+        app.addLabel(label, str(label_value))
+        cnt += 1
+
+    app.stopFrame()
+
+    app.addLabel("The bottom row", 0, 5)
+    
 
 def load_states_tab():
     pass
