@@ -39,22 +39,30 @@ def data_loader(file_in):
     global master_df, missing_data, state_instances
     master_df, missing_data = state.init_master_file(file_in,
                                                      numerical_columns)
-
-
+    inc = 30
+    increment_prog_bar(inc)
     global tot_amt, tot_num, avg_amt
-    print("data_loader master df-", master_df)
+
+    # The value to increament the progress bar by
+    inc = 1
     for state_name in state_instance_dict['State']:
+        print("current state: ", state_name, "\n dataloader view of prog bar:",
+              app.getMeter("initialization progress"),
+              "\nincreament value:", inc)
+
         crnt_state = States(state_name)
         crnt_state.populate_data(master_df)
-
-        print(crnt_state.total_subsidies)
-        tot_amt += crnt_state.total_subsidies
         state_instances.append(crnt_state)
 
+        # Calculate the total subsidy values
+        tot_amt += crnt_state.total_subsidies
+
+        # Here we increment the progress bar
+        increment_prog_bar(inc)
+
     tot_num = master_df.shape[0]
-    print("################",tot_num, master_df.shape,"\n\n")
+
     avg_amt = tot_amt / tot_num
-    print(avg_amt, tot_amt, tot_num)
 
 
 # Does Nothing / Used for calling template buttons
@@ -67,7 +75,8 @@ def load_plt(coord_r, coord_c, df):
 
 
 def increment_prog_bar(increment):
-    raise NotImplementedError
+    new_prog = int(app.getMeter("initialization progress")[1][:2]) + increment
+    app.setMeter("initialization progress", new_prog)
 
 
 # LOAD AND INIT DATA/WINDOWS
@@ -77,14 +86,17 @@ def initialize_dataset():
 
     if file_path != "- Choose a file -":  # default
         print("intializing contents of file: ", app.getEntry("load file"))
-        # TEMPORARY fix for displaying the progress bar
-        app.setMeter('initialization progress', 100)
+
         display_window("Main Screen", False)
         data_loader(file_path)
 
+        increment_prog_bar(5)
+         
         load_data_win()
-        app.hideSubWindow("Main Screen")
+        # Once we've finished loading data finalize prog bar
+        app.setMeter('initialization progress', 100)
         app.show()
+        app.hideSubWindow("Main Screen")
     else:
         print("Please choose a file before loading ")
 
@@ -109,7 +121,7 @@ def load_main_win():
     app.addButton("Generate", initialize_dataset)
 
     # INIT/EXIT BTNS
-    app.addMeter("initialization progress")
+    app.addMeter("initialization progress", app.getRow(), 0, 1, 3)
     app.setMeterFill("initialization progress", "light blue")
     app.addButton("Exit", exit_main, app.getRow(), 3)
 
@@ -122,7 +134,7 @@ def load_data_win():
     app.startTabbedFrame("Data Win Tabs")
     
     app.startTab("Overview")
-    app.setTabbedFrameFont("Overview", size=90)
+
     load_overview_tab()
     app.stopTab()
 
