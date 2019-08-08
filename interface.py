@@ -107,8 +107,8 @@ def exit_main():
 
 
 # MAIN WINDOW
-def load_main_win():
-    app.startSubWindow("Main Screen", "900x600")
+def load_main_win(width, length):
+    app.startSubWindow("Main Screen", str(width) + "x" + str(length))
 
     # LOGO
     app.startFrame('main_header', 0, 0)
@@ -123,6 +123,7 @@ def load_main_win():
     # INIT/EXIT BTNS
     app.addMeter("initialization progress", app.getRow(), 0, 1, 3)
     app.setMeterFill("initialization progress", "light blue")
+    app.setMeterWidth("initialization progress", width * .75)
     app.addButton("Exit", exit_main, app.getRow(), 3)
 
     app.stopSubWindow()
@@ -222,10 +223,11 @@ app = None
 master_df = None
 
 
-# MAIN DISPLAY LOOP
+# MAIN DISPLAY VARIABLES
 width = 1200
-height = 800
+length = 800
+main_win_ratio = 0.85
 app = gui("Subsidy Calculator", str(width) + "x" + str(height))
-load_main_win()
+load_main_win( width * main_win_ratio, length * main_win_ratio )
 
 app.go(startWindow="Main Screen")
