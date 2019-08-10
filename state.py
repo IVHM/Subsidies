@@ -18,7 +18,7 @@ pd.options.display.float_format = '{:.2f}'.format
 def init_master_file(file_in, numerical_columns):
 
     # DataFrame containing the information for all subsidies
-    s_m_out = pd.read_csv(file_in, na_values=[' ', "\"\""])
+    s_m_out = pd.read_csv(file_in, na_values=[' ', "\"\"","$0"])
 
 
     # Now we clean up the data removing all special characters from the values
