@@ -32,6 +32,7 @@ missing_data = None
 tot_amt = 0
 tot_num = 0
 avg_amt = 0
+stats_overview = []
 
 
 # LOADS THE CLASSES/DATAFRAME
@@ -41,7 +42,7 @@ def data_loader(file_in):
                                                      numerical_columns)
     inc = 30
     increment_prog_bar(inc)
-    global tot_amt, tot_num, avg_amt
+    global tot_amt, tot_num, avg_amt, stats_overview
 
     # The value to increament the progress bar by
     inc = 1
@@ -61,6 +62,9 @@ def data_loader(file_in):
         increment_prog_bar(inc)
 
     tot_num = master_df.shape[0]
+
+    # Overview of subsidy value statistics
+    stats_overview = master_df["Subsidy Value"].describe()
 
     avg_amt = tot_amt / tot_num
 
@@ -91,7 +95,7 @@ def initialize_dataset():
         data_loader(file_path)
 
         increment_prog_bar(5)
-         
+
         load_data_win()
         # Once we've finished loading data finalize prog bar
         app.setMeter('initialization progress', 100)
@@ -133,7 +137,7 @@ def load_main_win(width, length):
 # Contains the different tabbed views of the data
 def load_data_win():
     app.startTabbedFrame("Data Win Tabs")
-    
+
     app.startTab("Overview")
 
     load_overview_tab()
@@ -149,27 +153,40 @@ def load_data_win():
 
     app.stopTabbedFrame()
     app.setTabbedFrameTabExpand("Data Win Tabs", expand=True)
-    
+
 
 def load_data():
     raise NotImplementedError
 
 
-#Temporary values for testing display
+# Temporary values for testing display
 overview_T_R_values = DataFrame({"Description": list("abcdefghi"),
                                  "Value": randn(9)})
+'''
+Top right labels will be
+* TOTAL SUBSIDY VALUES
+* TOTAL NUMBER OF SUBSIDIES
+* AVERAGE SUBSIDY VALUE
+* MEAN SUBSIDY VALUE
+* MODE SUBSIDY VALUE
+* COMPANY THAT RECIEVED THE LARGEST SUBSIDY 
+ 
+
+
+
+'''
 
 # TABS FOR DATA WINDOW
 def load_overview_tab():
-     # Plot viewer
+    # Plot viewer
     app.startFrame("Plot", row=0, column=0)
-    app.setFrameWidth("Plot",8)
+    app.setFrameWidth("Plot", 400)
     app.setBg("light blue")
     app.addLabel("-- THIS IS WHERE THE PLOT IMAGE GOES --")
     app.stopFrame()
 
     # Description data ie. Avg subsidy, top state, largest subsidy
-    app.startFrame("Miscelaneaous data labels", row=0, column=8)
+    app.startFrame("Miscelaneaous data labels", row=0, column=3)
     app.setFrameWidth("Miscelaneaous data labels", 1)
     app.setBg("yellow")
     app.label("DESCRIPTION")
@@ -183,9 +200,8 @@ def load_overview_tab():
 
     app.stopFrame()
 
-
     # Value data
-    app.startFrame("Miscelaneaous data values", row=0, column=9)
+    app.startFrame("Miscelaneaous data values", row=0, column=4)
     app.setFrameWidth("Miscelaneaous data values", 1)
     app.setBg("yellow")
     app.addLabel("VALUE")
@@ -199,8 +215,19 @@ def load_overview_tab():
 
     app.stopFrame()
 
-    app.addLabel("The bottom row", 0, 5)
-    
+    crnt_row = app.getRow()
+
+    # Create the botttom four panels
+    for i in range(4):
+        crnt_frame = "B_F_" + str(i)
+        app.startFrame(crnt_frame, row=crnt_row, column=i)
+
+        # Now create each set of labels in the panels
+        for k in range(6):
+            app.addLabel("THis is label : " + str(i) + "_" + str(k))
+
+        app.stopFrame()
+
 
 def load_states_tab():
     pass
@@ -227,7 +254,7 @@ master_df = None
 width = 1200
 length = 800
 main_win_ratio = 0.85
-app = gui("Subsidy Calculator", str(width) + "x" + str(height))
-load_main_win( width * main_win_ratio, length * main_win_ratio )
+app = gui("Subsidy Calculator", str(width) + "x" + str(length))
+load_main_win(width * main_win_ratio, length * main_win_ratio)
 
 app.go(startWindow="Main Screen")
